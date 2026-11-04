@@ -12,7 +12,7 @@ export default async function Home() {
   return (
     <main className="container narrow">
       <section className="card hero">
-        <p className="eyebrow">🐕 Luna Miles</p>
+        <p className="eyebrow">🐕 Pawva</p>
         <h1>Every walk counts.</h1>
         <p>Log your dog&apos;s walks and see an estimate of the calories they burned.</p>
         <div className="actions">

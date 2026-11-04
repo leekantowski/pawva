@@ -1,7 +1,7 @@
 import AuthForm from "@/components/AuthForm";
 import { signUp } from "@/app/auth/actions";
 
-export const metadata = { title: "Sign up · Luna Miles" };
+export const metadata = { title: "Sign up · Pawva" };
 
 export default function SignupPage() {
   return (

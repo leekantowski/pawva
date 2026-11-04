@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata = { title: "Walks · Luna Miles" };
+export const metadata = { title: "Walks · Pawva" };
 
 // Placeholder for the walk log (feature 3). For now it proves you're logged in.
 export default async function WalksPage() {

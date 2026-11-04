@@ -1,7 +1,7 @@
 import AuthForm from "@/components/AuthForm";
 import { logIn } from "@/app/auth/actions";
 
-export const metadata = { title: "Log in · Luna Miles" };
+export const metadata = { title: "Log in · Pawva" };
 
 export default function LoginPage() {
   return (
