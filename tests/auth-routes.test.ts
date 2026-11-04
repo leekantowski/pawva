@@ -10,6 +10,10 @@ describe("authRedirect (who is allowed on which page)", () => {
     expect(authRedirect("/walks/42", false)).toBe("/login");
   });
 
+  it("sends a logged-out visitor on /dogs to /login", () => {
+    expect(authRedirect("/dogs", false)).toBe("/login");
+  });
+
   it("lets a logged-in user see /walks", () => {
     expect(authRedirect("/walks", true)).toBeNull();
   });
