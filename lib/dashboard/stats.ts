@@ -51,7 +51,7 @@ export function computeDashboardStats(walks: StatWalk[], today: string): Dashboa
   for (const walk of walks) {
     miles += Number(walk.distance_mi);
     minutes += Number(walk.duration_min);
-    if (walk.walked_on > thisMonday && walk.walked_on <= thisSunday) {
+    if (walk.walked_on >= thisMonday && walk.walked_on <= thisSunday) {
       caloriesThisWeek += Number(walk.calories_est);
     }
   }
