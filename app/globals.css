@@ -119,10 +119,10 @@ a { color: var(--forest); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
 .walk-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
-.walk-card { display: block; color: inherit; text-decoration: none; padding: 16px 20px; }
+.walk-card { display: block; padding: 16px 20px; }
 .walk-card:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12); }
-.walk-card-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-.walk-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.walk-card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.walk-stats { color: inherit; text-decoration: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .walk-stats > div { display: flex; flex-direction: column; }
 .stat { font-size: 1.25rem; font-weight: 800; color: var(--forest-dark); }
 .stat-label { font-size: 0.8rem; color: var(--muted); }
@@ -151,3 +151,34 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   background: #fff8f7 !important;
 }
 .field-row { align-items: start; }
+
+/* Stars (feature 5) */
+.walk-card-link { color: inherit; text-decoration: none; flex: 1; }
+.walk-card-link:hover strong { text-decoration: underline; }
+.star-wrap { display: inline-flex; flex-direction: column; align-items: flex-end; }
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--tan);
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 8px;
+}
+.star-btn:hover { background: rgba(200, 149, 92, 0.15); }
+.star-btn:focus-visible { outline: 2px solid var(--forest); }
+.star-md { font-size: 1.6rem; }
+.star-lg { font-size: 2.2rem; }
+.star-btn.is-starred { color: #d99a00; }
+.detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tab {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--forest);
+  color: var(--forest);
+  text-decoration: none;
+  font-weight: 600;
+}
+.tab.is-active { background: var(--forest); color: var(--cream); }

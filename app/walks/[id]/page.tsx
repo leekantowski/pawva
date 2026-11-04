@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { deleteWalk } from "@/app/walks/actions";
 import DeleteWalkButton from "@/components/DeleteWalkButton";
+import StarButton from "@/components/StarButton";
 import { formatPace, formatWalkDate, parseWalkId } from "@/lib/walks/form";
-import { getWalk } from "@/lib/walks/queries";
+import { getWalk, isStarred } from "@/lib/walks/queries";
 
 export const metadata = { title: "Walk · Pawva" };
 
@@ -26,8 +27,13 @@ export default async function WalkDetailPage({ params }: { params: Promise<{ id:
         <Link href="/walks">← All walks</Link>
       </p>
       <section className="card">
-        <p className="eyebrow">{walk.dogs?.name ?? "Unknown dog"}</p>
-        <h1>{formatWalkDate(walk.walked_on)}</h1>
+        <div className="detail-head">
+          <div>
+            <p className="eyebrow">{walk.dogs?.name ?? "Unknown dog"}</p>
+            <h1>{formatWalkDate(walk.walked_on)}</h1>
+          </div>
+          <StarButton walkId={walk.id} starred={isStarred(walk)} size="lg" />
+        </div>
 
         <dl className="detail-grid">
           <div>
