@@ -19,3 +19,9 @@
 > revert
 
 **Summary:** Reverted the break with `git revert` (`51d0ab1`) and pushed. CI went green again.
+
+## Prompt 4
+
+> merge
+
+**Summary:** Added this prompt to the log, checked CI, then merged PR #18 into main and switched back to an up-to-date main.
