@@ -14,6 +14,10 @@ describe("authRedirect (who is allowed on which page)", () => {
     expect(authRedirect("/dogs", false)).toBe("/login");
   });
 
+  it("sends a logged-out visitor on /dashboard to /login", () => {
+    expect(authRedirect("/dashboard", false)).toBe("/login");
+  });
+
   it("lets a logged-in user see /walks", () => {
     expect(authRedirect("/walks", true)).toBeNull();
   });
