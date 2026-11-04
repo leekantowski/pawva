@@ -1,8 +1,12 @@
 # Integration tests (real Supabase)
 
-`walks-rls.test.ts` is PLAN.md §4 Test 1 (data isolation). It logs in as two real users
-against the real Supabase project and checks that row-level security keeps User A's walk
-invisible to User B. No mocks.
+- `walks-rls.test.ts` is PLAN.md §4 Test 1 (data isolation). It logs in as two real users
+  against the real Supabase project and checks that row-level security keeps User A's walk
+  invisible to User B. No mocks.
+- `stars-rls.test.ts` (feature 5) checks that users only see and change their own stars, that a
+  walk can be starred once per user, and that the "Starred" query returns only starred walks.
+
+Every migration in `supabase/migrations/` must have been run in Supabase first, or these fail.
 
 It runs in GitHub Actions (`.github/workflows/tests.yml`, job "Data isolation") on every PR,
 on pushes to main, and by hand from the Actions tab.
@@ -32,7 +36,7 @@ RLS_TEST_B_EMAIL=... RLS_TEST_B_PASSWORD=... npm run test:rls
 
 If any variable is missing, the test fails on purpose instead of skipping.
 
-## Red → green
+## Red → green (walks; for stars use the `*-stars-select-policy.sql` snippets the same way)
 
 1. Green: the job passes.
 2. Break: run `supabase/snippets/break-walks-select-policy.sql` in the Supabase SQL Editor.
