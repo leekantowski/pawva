@@ -6,6 +6,8 @@ import { APP_TIME_ZONE, computeDashboardStats, todayIn, weeklyCalories, type Sta
 import { formatPace } from "@/lib/walks/form";
 import { lifetimeTotals, type LifetimeDog } from "@/lib/dashboard/lifetime";
 import LifetimeCard from "@/components/LifetimeCard";
+import StreakCard from "@/components/StreakCard";
+import { computeStreak } from "@/lib/dashboard/streak";
 
 export const metadata = { title: "Dashboard · Pawva" };
 
@@ -31,6 +33,10 @@ export default async function DashboardPage() {
   const today = todayIn(APP_TIME_ZONE);
   const stats = computeDashboardStats(walks, today);
   const weeks = weeklyCalories(walks, today, 12);
+  const streak = computeStreak(
+    walks.map((w) => w.walked_on),
+    today,
+  );
 
   const pace =
     stats.avgPaceMinPerMile === null ? "–" : formatPace(1, stats.avgPaceMinPerMile).replace(" /mi", "");
@@ -49,6 +55,8 @@ export default async function DashboardPage() {
       {lifetime.map((t) => (
         <LifetimeCard key={t.dogId} totals={t} />
       ))}
+
+      <StreakCard streak={streak} />
 
       <section className="stat-grid" aria-label="Summary">
         <div className="card stat-tile">
