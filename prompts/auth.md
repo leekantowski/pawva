@@ -18,3 +18,9 @@
 > Go. Two notes: (1) Please try pushing to a branch named feature/auth, since my class requires feature-named branches. If the session blocks it, use your branch and tell me, and I’ll rename it on GitHub. (2) “Confirm email” is already turned off in Supabase.
 
 **Summary:** Opened issue #3, branched `feature/auth` from main, scaffolded Next.js 16 + TypeScript + Supabase SSR, built sign-up/login/logout with route protection in `proxy.ts`, added 11 Vitest tests, and verified that tests and the production build pass.
+
+## Prompt 3
+
+> merge
+
+**Summary:** Added this prompt to the log, then merged PR #4 into main with a merge commit and switched back to an up-to-date main.
