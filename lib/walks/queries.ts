@@ -1,5 +1,5 @@
 import type { createClient } from "@/lib/supabase/server";
-import type { WalksView } from "@/lib/walks/view";
+import { notesPattern, sortOrder, type WalkFilters } from "@/lib/walks/filters";
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
@@ -38,12 +38,19 @@ export async function getWalk(supabase: Supabase, id: number): Promise<WalkRow |
   return data ?? null;
 }
 
-/** The user's walks, newest first. view "starred" returns only walks the user has starred. */
-export async function listWalks(supabase: Supabase, view: WalksView) {
-  return supabase
-    .from("walks")
-    .select(view === "starred" ? STARRED_WALK_COLUMNS : WALK_COLUMNS)
-    .order("walked_on", { ascending: false })
-    .order("created_at", { ascending: false })
-    .returns<WalkRow[]>();
+/**
+ * The user's walks with search, date range, Starred tab and sort applied — all in one query.
+ * Row-level security limits it to the user's own walks (and own stars).
+ */
+export async function listWalks(supabase: Supabase, filters: WalkFilters) {
+  let query = supabase.from("walks").select(filters.view === "starred" ? STARRED_WALK_COLUMNS : WALK_COLUMNS);
+
+  if (filters.q) query = query.ilike("notes", notesPattern(filters.q));
+  if (filters.from) query = query.gte("walked_on", filters.from);
+  if (filters.to) query = query.lte("walked_on", filters.to);
+
+  for (const { column, ascending } of sortOrder(filters.sort)) {
+    query = query.order(column, { ascending });
+  }
+  return query.returns<WalkRow[]>();
 }

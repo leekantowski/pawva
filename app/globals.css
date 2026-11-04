@@ -182,3 +182,26 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   font-weight: 600;
 }
 .tab.is-active { background: var(--forest); color: var(--cream); }
+
+/* Find things (feature 6) */
+.filters { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; padding: 16px; }
+.filters label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 0.9rem; }
+.filters input, .filters select {
+  font: inherit;
+  font-weight: 400;
+  padding: 10px;
+  border: 1px solid #d8cdb8;
+  border-radius: 10px;
+  background: #fff;
+  min-width: 0;
+}
+.filters input:focus, .filters select:focus { outline: 2px solid var(--forest); outline-offset: 1px; }
+.search-row { display: flex; gap: 8px; }
+.search-row input { flex: 1; }
+.filters-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.filters-clear { margin: 0; font-size: 0.9rem; }
+.result-count { margin: 0 0 10px; font-size: 0.9rem; }
+@media (max-width: 520px) {
+  .filters-row { grid-template-columns: 1fr 1fr; }
+  .filters-row label:last-child { grid-column: 1 / -1; }
+}
