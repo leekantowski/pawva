@@ -10,3 +10,9 @@
 > * Put the steps math in a pure function with a couple of unit tests; skip red/green steps. Tell me how to check it on the preview.
 
 **Summary:** Noted that PLAN.md numbers the treat converter as feature 10 (feature 9 is the walk streak) and built this as its replacement. Opened issue #23 and branched `feature/lifetime-steps`. Added `lib/steps.ts` (small < 25 lb → 18 in stride, medium 25–59.9 lb → 28 in, large ≥ 60 lb → 36 in; steps = miles × 63,360 ÷ stride), a "Steps (est.)" tile on the walk detail page, and a "Luna’s lifetime totals" card (miles, estimated calories, estimated steps, walks) at the top of `/dashboard`, one card per dog. No database changes. Added 6 unit tests (92 total); checked the card in a temporary local page, which was deleted. Skipped red → green as asked.
+
+## Prompt 2
+
+> ok awesome lets merge
+
+**Summary:** Added this prompt to the log, checked CI, then merged PR #24 into main and switched back to an up-to-date main.
