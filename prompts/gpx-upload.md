@@ -13,3 +13,9 @@
 > * Give me the SQL to run if the walks table needs a new column. Add unit tests for the distance and duration math, but skip red/green steps for this one. Tell me how to check it on the preview.
 
 **Summary:** Opened issue #21 and branched `feature/gpx-upload`. Added `supabase/migrations/0003_walk_started_at.sql` (a `started_at` column plus a unique (user_id, started_at) rule), browser-side GPX parsing in `lib/gpx/parse.ts` (haversine distance, first-to-last duration, California date and start time; 100k points parse in about 0.2 s), preview logic in `lib/gpx/preview.ts` (ready / already imported / same workout twice / unusable / unreadable), a `/walks/import` page with a checkbox preview table and dog dropdown, and an `importGpxWalks` Server Action that re-checks every row, computes calories with the same formula, saves `source = "gpx"`, and skips duplicates in the database. Added 18 unit tests (86 total). Checked the importer in a real browser with sample files (temporary page, not committed) and checked the SQL in a throwaway local Postgres. Skipped red → green as asked.
+
+## Prompt 2
+
+> yep everything looks good. merge
+
+**Summary:** Added this prompt to the log, checked CI, then merged PR #22 into main and switched back to an up-to-date main.
