@@ -1,7 +1,7 @@
 // Pure routing rules for auth, kept separate so they're easy to unit test.
 
-/** Pages that require a logged-in user. Later features add /dashboard, etc. */
-export const PROTECTED_PREFIXES = ["/walks", "/dogs"];
+/** Pages that require a logged-in user. */
+export const PROTECTED_PREFIXES = ["/walks", "/dogs", "/dashboard"];
 
 /** Pages only for logged-out visitors. */
 export const AUTH_PAGES = ["/login", "/signup"];

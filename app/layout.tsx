@@ -26,6 +26,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </Link>
           {user ? (
             <nav className="nav">
+              <Link href="/dashboard">Dashboard</Link>
               <Link href="/walks">Walks</Link>
               <Link href="/dogs">Dogs</Link>
               <form action={logOut}>
