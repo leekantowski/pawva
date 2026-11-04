@@ -14,12 +14,12 @@ export type WalkRow = {
   calories_est: number;
   notes: string | null;
   source: string;
-  dogs: { name: string } | null;
+  dogs: { name: string; weight_lb: number } | null;
   /** The logged-in user's star on this walk (RLS hides other users' stars): [] or [{ walk_id }]. */
   stars: { walk_id: number }[];
 };
 
-const BASE_COLUMNS = "id, dog_id, walked_on, distance_mi, duration_min, calories_est, notes, source, dogs(name)";
+const BASE_COLUMNS = "id, dog_id, walked_on, distance_mi, duration_min, calories_est, notes, source, dogs(name, weight_lb)";
 export const WALK_COLUMNS = `${BASE_COLUMNS}, stars(walk_id)`;
 /** `!inner` turns the stars join into a filter: only walks that have one of my stars. */
 const STARRED_WALK_COLUMNS = `${BASE_COLUMNS}, stars!inner(walk_id)`;

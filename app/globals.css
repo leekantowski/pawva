@@ -248,3 +248,14 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 .import-actions select { font: inherit; padding: 10px; border: 1px solid #d8cdb8; border-radius: 10px; background: #fff; }
 .import-table td:last-child { white-space: normal; min-width: 180px; }
 .import-table td:last-child .field-error { display: inline-block; }
+
+/* Lifetime totals (feature 9) */
+.lifetime-card { margin-bottom: 16px; background: var(--forest); color: var(--cream); border-top-color: var(--tan); }
+.lifetime-title { margin: 0 0 12px; font-size: 1.1rem; }
+.lifetime-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0; }
+.lifetime-grid dt { font-size: 0.85rem; opacity: 0.85; }
+.lifetime-grid dd { margin: 0; font-size: 1.8rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.15; }
+@media (max-width: 640px) {
+  .lifetime-grid { grid-template-columns: 1fr 1fr; }
+  .lifetime-grid dd { font-size: 1.5rem; }
+}

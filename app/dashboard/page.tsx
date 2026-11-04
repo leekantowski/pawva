@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import CaloriesChart from "@/components/CaloriesChart";
 import { APP_TIME_ZONE, computeDashboardStats, todayIn, weeklyCalories, type StatWalk } from "@/lib/dashboard/stats";
 import { formatPace } from "@/lib/walks/form";
+import { lifetimeTotals, type LifetimeDog } from "@/lib/dashboard/lifetime";
+import LifetimeCard from "@/components/LifetimeCard";
 
 export const metadata = { title: "Dashboard · Pawva" };
 
@@ -15,12 +17,16 @@ export default async function DashboardPage() {
   // Second layer of protection in case the proxy is ever bypassed.
   if (!user) redirect("/login");
 
-  // Row-level security: only the logged-in user's walks come back.
-  const { data, error } = await supabase
-    .from("walks")
-    .select("walked_on, distance_mi, duration_min, calories_est")
-    .returns<StatWalk[]>();
+  // Row-level security: only the logged-in user's walks and dogs come back.
+  const [{ data, error }, { data: dogData }] = await Promise.all([
+    supabase
+      .from("walks")
+      .select("dog_id, walked_on, distance_mi, duration_min, calories_est")
+      .returns<(StatWalk & { dog_id: number })[]>(),
+    supabase.from("dogs").select("id, name, weight_lb").order("created_at").returns<LifetimeDog[]>(),
+  ]);
   const walks = data ?? [];
+  const lifetime = lifetimeTotals(walks, dogData ?? []);
 
   const today = todayIn(APP_TIME_ZONE);
   const stats = computeDashboardStats(walks, today);
@@ -39,6 +45,10 @@ export default async function DashboardPage() {
       </div>
 
       {error && <p className="error">Couldn&apos;t load your walks. Please refresh.</p>}
+
+      {lifetime.map((t) => (
+        <LifetimeCard key={t.dogId} totals={t} />
+      ))}
 
       <section className="stat-grid" aria-label="Summary">
         <div className="card stat-tile">

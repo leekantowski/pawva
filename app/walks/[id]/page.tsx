@@ -6,6 +6,7 @@ import DeleteWalkButton from "@/components/DeleteWalkButton";
 import StarButton from "@/components/StarButton";
 import { formatPace, formatWalkDate, parseWalkId } from "@/lib/walks/form";
 import { getWalk, isStarred } from "@/lib/walks/queries";
+import { estimateSteps } from "@/lib/steps";
 
 export const metadata = { title: "Walk · Pawva" };
 
@@ -52,6 +53,12 @@ export default async function WalkDetailPage({ params }: { params: Promise<{ id:
             <dt>Calories (est.)</dt>
             <dd>{Math.round(Number(walk.calories_est))} cal</dd>
           </div>
+          {walk.dogs && (
+            <div>
+              <dt>Steps (est.)</dt>
+              <dd>{estimateSteps(distance, Number(walk.dogs.weight_lb)).toLocaleString("en-US")}</dd>
+            </div>
+          )}
         </dl>
 
         {walk.source === "gpx" && <p className="badge">⌚ Imported from Apple Watch</p>}
