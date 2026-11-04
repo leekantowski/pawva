@@ -228,7 +228,23 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 }
 
 /* GPX import (feature 8) */
-.head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+/* Page-header actions: one primary button, then smaller secondary links (stranger-test fix). */
+.head-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.btn-lg { padding: 14px 22px; font-size: 1.05rem; }
+.secondary-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--forest);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 10px 2px; /* keeps a comfortable tap target without looking like a button */
+}
+@media (max-width: 520px) {
+  .page-head:has(.head-actions) { flex-direction: column; align-items: stretch; }
+  .head-actions { flex-direction: column; align-items: stretch; gap: 4px; }
+  .head-actions .btn-lg { width: 100%; }
+  .head-actions .secondary-link { align-self: center; }
+}
 .importer { display: flex; flex-direction: column; gap: 16px; }
 .importer input[type="file"] { font: inherit; padding: 10px; background: #fff; border: 1px dashed #c9bda6; border-radius: 10px; }
 .import-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
