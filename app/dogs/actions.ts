@@ -2,43 +2,50 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { validateDog } from "@/lib/dogs/validate";
+import { validateDog, type DogFormValues } from "@/lib/dogs/validate";
+import { readFields, type FormState } from "@/lib/validation";
 
-export type DogFormState = {
-  error: string | null;
+export type DogFormState = FormState<DogFormValues> & {
   saved: boolean;
   savedCount: number; // bumps on each successful save so the form can reset
-  values: { name: string; breed: string; weight: string };
 };
 
-export async function addDog(prev: DogFormState, formData: FormData): Promise<DogFormState> {
-  const values = {
-    name: String(formData.get("name") ?? ""),
-    breed: String(formData.get("breed") ?? ""),
-    weight: String(formData.get("weight") ?? ""),
-  };
+const DOG_FIELDS = ["name", "breed", "weight"] as const;
+const EMPTY: DogFormValues = { name: "", breed: "", weight: "" };
 
+export async function addDog(prev: DogFormState, formData: FormData): Promise<DogFormState> {
+  const values = readFields(formData, DOG_FIELDS);
+  const fail = (patch: Partial<DogFormState>): DogFormState => ({
+    formError: null,
+    fieldErrors: {},
+    values,
+    saved: false,
+    savedCount: prev.savedCount,
+    ...patch,
+  });
+
+  // Server-side check: runs even if the browser check was bypassed.
   const result = validateDog(values);
-  if (!result.ok) return { error: result.error, saved: false, savedCount: prev.savedCount, values };
+  if (!result.ok) return fail({ fieldErrors: result.errors });
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Your session expired. Please log in again.", saved: false, savedCount: prev.savedCount, values };
+  if (!user) return fail({ formError: "Your session expired. Please log in again." });
 
   const { error } = await supabase.from("dogs").insert({
     user_id: user.id,
-    name: result.dog.name,
-    breed: result.dog.breed,
-    weight_lb: result.dog.weightLb,
+    name: result.value.name,
+    breed: result.value.breed,
+    weight_lb: result.value.weightLb,
   });
 
   if (error) {
     console.error("addDog failed:", error.message);
-    return { error: "Couldn't save your dog. Please try again.", saved: false, savedCount: prev.savedCount, values };
+    return fail({ formError: "Couldn't save your dog. Please try again." });
   }
 
   revalidatePath("/dogs");
-  return { error: null, saved: true, savedCount: prev.savedCount + 1, values: { name: "", breed: "", weight: "" } };
+  return { formError: null, fieldErrors: {}, values: EMPTY, saved: true, savedCount: prev.savedCount + 1 };
 }
