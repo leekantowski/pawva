@@ -54,6 +54,8 @@ export default async function WalkDetailPage({ params }: { params: Promise<{ id:
           </div>
         </dl>
 
+        {walk.source === "gpx" && <p className="badge">⌚ Imported from Apple Watch</p>}
+
         {walk.notes && (
           <>
             <h2 className="small-heading">Notes</h2>
