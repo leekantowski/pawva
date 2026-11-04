@@ -5,7 +5,7 @@ import { logOut } from "@/app/auth/actions";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Luna Miles",
+  title: "Pawva",
   description: "A dog-walk log with calorie estimates.",
 };
 
@@ -22,7 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <header className="topbar">
           <Link href={user ? "/walks" : "/"} className="brand">
-            🐕 Luna Miles
+            🐕 Pawva
           </Link>
           {user ? (
             <form action={logOut}>
