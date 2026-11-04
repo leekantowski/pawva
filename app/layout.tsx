@@ -25,11 +25,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             🐕 Pawva
           </Link>
           {user ? (
-            <form action={logOut}>
-              <button type="submit" className="btn btn-ghost">
-                Log out
-              </button>
-            </form>
+            <nav className="nav">
+              <Link href="/walks">Walks</Link>
+              <Link href="/dogs">Dogs</Link>
+              <form action={logOut}>
+                <button type="submit" className="btn btn-ghost">
+                  Log out
+                </button>
+              </form>
+            </nav>
           ) : (
             <nav className="nav">
               <Link href="/login">Log in</Link>

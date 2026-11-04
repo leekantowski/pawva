@@ -83,3 +83,22 @@ a { color: var(--forest); }
 
 .error { color: var(--error); background: #fdecea; padding: 10px 12px; border-radius: 8px; margin: 0; }
 .muted { color: var(--muted); }
+
+/* Generic stacked form (used by the dog form) */
+.stack-form { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; }
+.stack-form h2 { margin: 0; }
+.stack-form label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
+.stack-form input {
+  font: inherit;
+  padding: 12px;
+  border: 1px solid #d8cdb8;
+  border-radius: 10px;
+  background: #fff;
+}
+.stack-form input:focus { outline: 2px solid var(--forest); outline-offset: 1px; }
+
+.success { color: var(--forest-dark); background: #e6f2e8; padding: 10px 12px; border-radius: 8px; margin: 0; }
+
+.dog-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.dog-card { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 16px 20px; }
+.dog-stats { display: flex; flex-direction: column; align-items: flex-end; font-weight: 600; }

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -20,7 +21,9 @@ export default async function WalksPage() {
         <p>
           Logged in as <strong>{user.email}</strong>.
         </p>
-        <p className="muted">Walk logging arrives in a later feature. 🐾</p>
+        <p className="muted">
+          Walk logging arrives in a later feature. 🐾 Meanwhile, <Link href="/dogs">add your dog</Link>.
+        </p>
       </section>
     </main>
   );
