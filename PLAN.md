@@ -102,13 +102,15 @@ users ──< dogs ──< walks
 
 | Planned feature | Shipped / Changed / Cut | Status (Done/Backlogged) | Learning | What changed and why (one line) |
 |---|---|---|---|---|
-| 1. Sign up / login | | | | |
-| 2. Data model | | | | |
-| 3. Walk CRUD | | | | |
-| 4. Validation | | | | |
-| 5. Stars | | | | |
-| 6. Find things | | | | |
-| 7. Dashboard | | | | |
-| 8. GPX upload | | | | |
-| 9. Walk streak | | | | |
-| 10. Treat converter | | | | |
+| 1. Sign up / login | Shipped | Done | | Email/password via Supabase Auth as planned; accounts live in Supabase's `auth.users` instead of a separate users table ([#4](https://github.com/leekantowski/pawva/pull/4)). |
+| 2. Data model | Shipped | Done | | Dogs + walks with row-level security; added a rule that a walk can only use your own dog ([#8](https://github.com/leekantowski/pawva/pull/8)). |
+| 3. Walk CRUD | Shipped | Done | | As planned, plus PLAN Test 1 (data isolation) running against the real database in GitHub Actions ([#10](https://github.com/leekantowski/pawva/pull/10)). |
+| 4. Validation | Shipped | Done | | Expanded from the walk form to every form, with inline per-field messages checked in the browser and on the server ([#12](https://github.com/leekantowski/pawva/pull/12)). |
+| 5. Stars | Shipped | Done | | As planned (junction table + Starred tab); stars limited to your own walks ([#14](https://github.com/leekantowski/pawva/pull/14)). |
+| 6. Find things | Shipped | Done | | As planned plus an "oldest first" sort; filters combine with Starred and stay in the URL ([#16](https://github.com/leekantowski/pawva/pull/16)). |
+| 7. Dashboard | Shipped | Done | | As planned with Monday–Sunday weeks in California time; includes PLAN Test 2, 156 cal ([#18](https://github.com/leekantowski/pawva/pull/18)). |
+| 8. GPX upload | Shipped | Done | | The riskiest feature shipped instead of being cut: parsed in the browser, preview table, duplicates skipped via a new `started_at` column ([#22](https://github.com/leekantowski/pawva/pull/22)). |
+| 9. Walk streak | Shipped | Done | | As planned plus a longest-streak count; today's missing walk doesn't break the streak until the day ends ([#26](https://github.com/leekantowski/pawva/pull/26)). |
+| 10. Treat converter | Changed | Done | | Swapped (owner's choice) for lifetime totals + estimated dog steps; computed from existing data, no new columns ([#24](https://github.com/leekantowski/pawva/pull/24)). |
+| Edit dog | Cut | Backlogged | | Not in the original stories; noticed missing during the validation work and left out of that PR (owner's choice) ([#12](https://github.com/leekantowski/pawva/pull/12)). |
+| App name: Luna Miles → Pawva | Changed | Done | | Renamed to match the project name: UI in [#6](https://github.com/leekantowski/pawva/pull/6), package name in [#20](https://github.com/leekantowski/pawva/pull/20). |
