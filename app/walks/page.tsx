@@ -32,9 +32,14 @@ export default async function WalksPage({
       <div className="page-head">
         <h1>{view === "starred" ? "Starred walks" : "Your walks"}</h1>
         {dogs.length > 0 && (
-          <Link href="/walks/new" className="btn btn-primary">
-            + Log a walk
-          </Link>
+          <div className="head-actions">
+            <Link href="/walks/import" className="btn btn-secondary">
+              Import from Apple Watch
+            </Link>
+            <Link href="/walks/new" className="btn btn-primary">
+              + Log a walk
+            </Link>
+          </div>
         )}
       </div>
 

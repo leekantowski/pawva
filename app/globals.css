@@ -226,3 +226,25 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .stat-tile-value { font-size: 1.6rem; }
 }
+
+/* GPX import (feature 8) */
+.head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.importer { display: flex; flex-direction: column; gap: 16px; }
+.importer input[type="file"] { font: inherit; padding: 10px; background: #fff; border: 1px dashed #c9bda6; border-radius: 10px; }
+.import-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.import-counts, .import-help { margin: 4px 0 12px; font-size: 0.9rem; }
+.table-scroll { overflow-x: auto; margin: 0 -8px; }
+.import-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.import-table th, .import-table td { padding: 8px; text-align: left; border-bottom: 1px solid #eee3d0; white-space: nowrap; }
+.import-table th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+.import-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.import-table input[type="checkbox"] { width: 18px; height: 18px; }
+.import-table .file-name { color: var(--muted); }
+.row-muted td { color: var(--muted); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; background: #efe7d8; color: var(--charcoal); font-size: 0.8rem; font-weight: 600; margin: 0; }
+.badge-ready { background: #e6f2e8; color: var(--forest-dark); }
+.import-actions { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.import-actions label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 0.9rem; }
+.import-actions select { font: inherit; padding: 10px; border: 1px solid #d8cdb8; border-radius: 10px; background: #fff; }
+.import-table td:last-child { white-space: normal; min-width: 180px; }
+.import-table td:last-child .field-error { display: inline-block; }
