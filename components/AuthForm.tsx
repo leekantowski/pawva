@@ -3,45 +3,47 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import type { AuthFormState } from "@/app/auth/actions";
+import { validateLogIn, validateSignUp, MIN_PASSWORD_LENGTH } from "@/lib/auth/validate";
+import FieldError, { a11yProps } from "@/components/form/FieldError";
+import { useFormValidation } from "@/components/form/useFormValidation";
 
 type Props = {
   mode: "login" | "signup";
   action: (prev: AuthFormState, formData: FormData) => Promise<AuthFormState>;
 };
 
+const FIELDS = ["email", "password"] as const;
+const initial: AuthFormState = { formError: null, fieldErrors: {}, values: { email: "" } };
+
 export default function AuthForm({ mode, action }: Props) {
-  const [state, formAction, pending] = useActionState(action, { error: null, email: "" });
   const isSignup = mode === "signup";
+  const [state, formAction, pending] = useActionState(action, initial);
+  const { errors, onSubmit, onChange } = useFormValidation(state, FIELDS, isSignup ? validateSignUp : validateLogIn);
 
   return (
-    <form action={formAction} className="card auth-form" noValidate>
+    <form action={formAction} onSubmit={onSubmit} onChange={onChange} className="card auth-form" noValidate>
       <h1>{isSignup ? "Create your account" : "Welcome back"}</h1>
 
-      <label>
+      <label htmlFor="email">
         Email
-        <input
-          name="email"
-          type="email"
-          autoComplete="email"
-          defaultValue={state.email}
-          required
-        />
+        <input {...a11yProps("email", errors.email)} type="email" autoComplete="email" defaultValue={state.values.email} />
+        <FieldError name="email" message={errors.email} />
       </label>
 
-      <label>
+      <label htmlFor="password">
         Password
+        {isSignup && <span className="hint">At least {MIN_PASSWORD_LENGTH} characters</span>}
         <input
-          name="password"
+          {...a11yProps("password", errors.password)}
           type="password"
           autoComplete={isSignup ? "new-password" : "current-password"}
-          minLength={6}
-          required
         />
+        <FieldError name="password" message={errors.password} />
       </label>
 
-      {state.error && (
+      {state.formError && (
         <p className="error" role="alert">
-          {state.error}
+          {state.formError}
         </p>
       )}
 

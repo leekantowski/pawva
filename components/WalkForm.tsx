@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { useActionState, useEffect, useRef } from "react";
 import type { WalkFormState } from "@/app/walks/actions";
-import type { WalkFormValues } from "@/lib/walks/form";
+import { validateWalk, type WalkFormValues } from "@/lib/walks/form";
+import FieldError, { a11yProps } from "@/components/form/FieldError";
+import { useFormValidation } from "@/components/form/useFormValidation";
+
+const FIELDS = ["walked_on", "dog_id", "distance_mi", "duration_min", "notes"] as const;
 
 type Props = {
   dogs: { id: number; name: string }[];
@@ -22,7 +26,8 @@ function localToday() {
 }
 
 export default function WalkForm({ dogs, action, initialValues, title, submitLabel, cancelHref }: Props) {
-  const [state, formAction, pending] = useActionState(action, { error: null, values: initialValues });
+  const [state, formAction, pending] = useActionState(action, { formError: null, fieldErrors: {}, values: initialValues });
+  const { errors, onSubmit, onChange } = useFormValidation(state, FIELDS, validateWalk);
   const dateRef = useRef<HTMLInputElement>(null);
 
   // New walks default to today. Done in the browser so it uses your time zone, not the server's.
@@ -34,47 +39,52 @@ export default function WalkForm({ dogs, action, initialValues, title, submitLab
   const onlyDog = dogs.length === 1 ? String(dogs[0].id) : "";
 
   return (
-    <form action={formAction} className="card stack-form" noValidate>
+    <form action={formAction} onSubmit={onSubmit} onChange={onChange} className="card stack-form" noValidate>
       <h1>{title}</h1>
 
-      <label>
+      <label htmlFor="walked_on">
         Date
-        <input ref={dateRef} name="walked_on" type="date" defaultValue={v.walked_on} required />
+        <input ref={dateRef} {...a11yProps("walked_on", errors.walked_on)} type="date" defaultValue={v.walked_on} />
+        <FieldError name="walked_on" message={errors.walked_on} />
       </label>
 
-      <label>
+      <label htmlFor="dog_id">
         Dog
-        <select name="dog_id" defaultValue={v.dog_id || onlyDog} required>
-          <option value="" disabled>
-            Choose a dog
-          </option>
+        <select {...a11yProps("dog_id", errors.dog_id)} defaultValue={v.dog_id || onlyDog}>
+          <option value="">Choose a dog</option>
           {dogs.map((dog) => (
             <option key={dog.id} value={dog.id}>
               {dog.name}
             </option>
           ))}
         </select>
+        <FieldError name="dog_id" message={errors.dog_id} />
       </label>
 
       <div className="field-row">
-        <label>
+        <label htmlFor="distance_mi">
           Distance (mi)
-          <input name="distance_mi" type="number" inputMode="decimal" step="0.01" min="0.01" defaultValue={v.distance_mi} required />
+          <input {...a11yProps("distance_mi", errors.distance_mi)} type="number" inputMode="decimal" step="0.01" defaultValue={v.distance_mi} />
+          <FieldError name="distance_mi" message={errors.distance_mi} />
         </label>
-        <label>
+        <label htmlFor="duration_min">
           Duration (min)
-          <input name="duration_min" type="number" inputMode="decimal" step="0.1" min="0.1" defaultValue={v.duration_min} required />
+          <input {...a11yProps("duration_min", errors.duration_min)} type="number" inputMode="decimal" step="0.1" defaultValue={v.duration_min} />
+          <FieldError name="duration_min" message={errors.duration_min} />
         </label>
       </div>
 
-      <label>
-        Notes <span className="muted">(optional)</span>
-        <textarea name="notes" rows={3} defaultValue={v.notes} />
+      <label htmlFor="notes">
+        <span>
+          Notes <span className="muted">(optional)</span>
+        </span>
+        <textarea {...a11yProps("notes", errors.notes)} rows={3} defaultValue={v.notes} />
+        <FieldError name="notes" message={errors.notes} />
       </label>
 
-      {state.error && (
+      {state.formError && (
         <p className="error" role="alert">
-          {state.error}
+          {state.formError}
         </p>
       )}
 

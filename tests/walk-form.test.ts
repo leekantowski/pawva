@@ -2,9 +2,9 @@ import { describe, it, expect } from "vitest";
 import {
   formatPace,
   formatWalkDate,
-  parseWalkForm,
   parseWalkId,
   shouldRecalculateCalories,
+  validateWalk,
   type WalkFormValues,
 } from "@/lib/walks/form";
 
@@ -16,31 +16,51 @@ const valid: WalkFormValues = {
   notes: "  Tilden loop  ",
 };
 
-describe("parseWalkForm (turning the walk form into a walk)", () => {
-  it("parses a complete walk and trims the notes", () => {
-    expect(parseWalkForm(valid)).toEqual({
-      walked_on: "2026-11-04",
-      dog_id: 7,
-      distance_mi: 2,
-      duration_min: 40,
-      notes: "Tilden loop",
+describe("validateWalk (walk form: the feature 4 user story)", () => {
+  it("accepts a complete walk and trims the notes", () => {
+    expect(validateWalk(valid)).toEqual({
+      ok: true,
+      value: { walked_on: "2026-11-04", dog_id: 7, distance_mi: 2, duration_min: 40, notes: "Tilden loop" },
     });
   });
 
   it("saves blank notes as no notes", () => {
-    expect(parseWalkForm({ ...valid, notes: "   " })?.notes).toBeNull();
+    const result = validateWalk({ ...valid, notes: "   " });
+    expect(result.ok && result.value.notes).toBeNull();
   });
 
-  it("rejects a walk with a missing date, dog, distance, or duration", () => {
-    expect(parseWalkForm({ ...valid, walked_on: "" })).toBeNull();
-    expect(parseWalkForm({ ...valid, dog_id: "" })).toBeNull();
-    expect(parseWalkForm({ ...valid, distance_mi: "" })).toBeNull();
-    expect(parseWalkForm({ ...valid, duration_min: "" })).toBeNull();
+  it("shows a friendly message next to each blank required field at once", () => {
+    expect(validateWalk({ walked_on: "", dog_id: "", distance_mi: "", duration_min: "", notes: "" })).toEqual({
+      ok: false,
+      errors: {
+        walked_on: "Please pick the date of the walk.",
+        dog_id: "Please choose a dog.",
+        distance_mi: "Please enter the distance.",
+        duration_min: "Please enter the duration.",
+      },
+    });
   });
 
   it("rejects a distance or duration of 0 or less", () => {
-    expect(parseWalkForm({ ...valid, distance_mi: "0" })).toBeNull();
-    expect(parseWalkForm({ ...valid, duration_min: "-5" })).toBeNull();
+    expect(validateWalk({ ...valid, distance_mi: "0", duration_min: "-5" })).toEqual({
+      ok: false,
+      errors: {
+        distance_mi: "Distance must be more than 0 miles.",
+        duration_min: "Duration must be more than 0 minutes.",
+      },
+    });
+  });
+
+  it("only flags the field that's wrong", () => {
+    expect(validateWalk({ ...valid, duration_min: "" })).toEqual({
+      ok: false,
+      errors: { duration_min: "Please enter the duration." },
+    });
+  });
+
+  it("rejects a date that doesn't exist", () => {
+    const result = validateWalk({ ...valid, walked_on: "2026-02-30" });
+    expect(result.ok === false && result.errors.walked_on).toBe("Please enter a real date.");
   });
 });
 

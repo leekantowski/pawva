@@ -3,39 +3,43 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { validateCredentials } from "@/lib/auth/validate";
+import { validateLogIn, validateSignUp, type AuthFields } from "@/lib/auth/validate";
 import { HOME_FOR_USERS, LOGIN_PAGE } from "@/lib/auth/routes";
+import { readFields, type FormState } from "@/lib/validation";
 
-export type AuthFormState = { error: string | null; email: string };
+// Only the email is echoed back; passwords are never sent back to the browser.
+export type AuthFormState = FormState<{ email: string }, AuthFields>;
 
-function readForm(formData: FormData) {
-  return {
-    email: String(formData.get("email") ?? "").trim(),
-    password: String(formData.get("password") ?? ""),
-  };
-}
+const AUTH_FIELDS = ["email", "password"] as const;
 
 export async function signUp(_prev: AuthFormState, formData: FormData): Promise<AuthFormState> {
-  const { email, password } = readForm(formData);
-  const invalid = validateCredentials(email, password);
-  if (invalid) return { error: invalid, email };
+  const raw = readFields(formData, AUTH_FIELDS);
+  const values = { email: raw.email };
+
+  // Server-side check: runs even if the browser check was bypassed.
+  const result = validateSignUp(raw);
+  if (!result.ok) return { formError: null, fieldErrors: result.errors, values };
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp(result.value);
 
   if (error) {
     if (error.code === "user_already_exists" || /already registered/i.test(error.message)) {
-      return { error: "That email is already registered. Try logging in.", email };
+      return { formError: null, fieldErrors: { email: "That email is already registered. Try logging in." }, values };
     }
     if (error.code === "weak_password") {
-      return { error: error.message, email };
+      return { formError: null, fieldErrors: { password: error.message }, values };
     }
-    return { error: "Couldn't create your account. Please try again.", email };
+    return { formError: "Couldn't create your account. Please try again.", fieldErrors: {}, values };
   }
 
   // "Confirm email" is off in Supabase, so sign-up returns a session right away.
   if (!data.session) {
-    return { error: "Account created, but you'll need to confirm your email before logging in.", email };
+    return {
+      formError: "Account created, but you'll need to confirm your email before logging in.",
+      fieldErrors: {},
+      values,
+    };
   }
 
   revalidatePath("/", "layout");
@@ -43,15 +47,17 @@ export async function signUp(_prev: AuthFormState, formData: FormData): Promise<
 }
 
 export async function logIn(_prev: AuthFormState, formData: FormData): Promise<AuthFormState> {
-  const { email, password } = readForm(formData);
-  if (!email || !password) {
-    return { error: "Please enter your email and password.", email };
-  }
+  const raw = readFields(formData, AUTH_FIELDS);
+  const values = { email: raw.email };
+
+  const result = validateLogIn(raw);
+  if (!result.ok) return { formError: null, fieldErrors: result.errors, values };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabase.auth.signInWithPassword(result.value);
   if (error) {
-    return { error: "Email or password is incorrect.", email };
+    // Deliberately vague: don't reveal whether the email has an account.
+    return { formError: "Email or password is incorrect.", fieldErrors: {}, values };
   }
 
   revalidatePath("/", "layout");

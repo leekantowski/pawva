@@ -141,3 +141,13 @@ a { color: var(--forest); }
 @media (max-width: 420px) {
   .walk-stats { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Inline validation messages (feature 4) */
+.field-error { color: var(--error); font-size: 0.9rem; font-weight: 600; }
+.field-error::before { content: "⚠ "; }
+.hint { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] {
+  border-color: var(--error) !important;
+  background: #fff8f7 !important;
+}
+.field-row { align-items: start; }

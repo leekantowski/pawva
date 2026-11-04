@@ -1,4 +1,5 @@
 // Pure helpers for the walk form and walk display. No Supabase here, so they're easy to test.
+import { hasErrors, positiveNumber, readFields, type FieldErrors, type Validation } from "@/lib/validation";
 
 export type WalkFormValues = {
   walked_on: string;
@@ -24,38 +25,68 @@ export const EMPTY_WALK_FORM: WalkFormValues = {
   notes: "",
 };
 
+export type WalkFields = keyof WalkFormValues;
+
+export const MAX_DISTANCE_MI = 1000;
+export const MAX_DURATION_MIN = 1440; // 24 hours
+
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-export function readWalkForm(formData: FormData): WalkFormValues {
-  const get = (key: keyof WalkFormValues) => String(formData.get(key) ?? "");
-  return {
-    walked_on: get("walked_on"),
-    dog_id: get("dog_id"),
-    distance_mi: get("distance_mi"),
-    duration_min: get("duration_min"),
-    notes: get("notes"),
-  };
+/** True for a real calendar date like 2026-11-04 (rejects 2026-02-30). */
+function isRealDate(iso: string): boolean {
+  if (!DATE_PATTERN.test(iso)) return false;
+  const d = new Date(`${iso}T00:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === iso;
 }
 
+export function readWalkForm(formData: FormData): WalkFormValues {
+  return readFields(formData, WALK_FIELDS);
+}
+
+const WALK_FIELDS = ["walked_on", "dog_id", "distance_mi", "duration_min", "notes"] as const;
+
 /**
- * Turns raw form values into a walk, or null if something required is missing or invalid.
- * (Feature 4 replaces the null with a friendly, field-specific message.)
+ * Checks the walk form: date, dog, distance and duration are required;
+ * distance and duration must be numbers > 0. One friendly message per field.
+ * Used in the browser and again in the Server Action.
  */
-export function parseWalkForm(values: WalkFormValues): WalkInput | null {
+export function validateWalk(values: WalkFormValues): Validation<WalkInput, WalkFields> {
+  const errors: FieldErrors<WalkFields> = {};
+
   const walked_on = values.walked_on.trim();
-  if (!DATE_PATTERN.test(walked_on)) return null;
+  if (!walked_on) errors.walked_on = "Please pick the date of the walk.";
+  else if (!isRealDate(walked_on)) errors.walked_on = "Please enter a real date.";
 
   const dog_id = Number(values.dog_id);
-  if (!Number.isInteger(dog_id) || dog_id <= 0) return null;
+  if (!values.dog_id.trim() || !Number.isInteger(dog_id) || dog_id <= 0) errors.dog_id = "Please choose a dog.";
 
-  if (!values.distance_mi.trim() || !values.duration_min.trim()) return null;
-  const distance_mi = Number(values.distance_mi);
-  const duration_min = Number(values.duration_min);
-  if (!Number.isFinite(distance_mi) || distance_mi <= 0) return null;
-  if (!Number.isFinite(duration_min) || duration_min <= 0) return null;
+  const distance = positiveNumber(values.distance_mi, {
+    label: "distance",
+    unit: "miles",
+    example: "1.5",
+    max: { value: MAX_DISTANCE_MI, text: `${MAX_DISTANCE_MI.toLocaleString("en-US")} miles or less` },
+  });
+  if ("error" in distance) errors.distance_mi = distance.error;
 
-  const notes = values.notes.trim() || null;
-  return { walked_on, dog_id, distance_mi, duration_min, notes };
+  const duration = positiveNumber(values.duration_min, {
+    label: "duration",
+    unit: "minutes",
+    example: "30",
+    max: { value: MAX_DURATION_MIN, text: `${MAX_DURATION_MIN.toLocaleString("en-US")} minutes (24 hours) or less` },
+  });
+  if ("error" in duration) errors.duration_min = duration.error;
+
+  if (hasErrors(errors) || "error" in distance || "error" in duration) return { ok: false, errors };
+  return {
+    ok: true,
+    value: {
+      walked_on,
+      dog_id,
+      distance_mi: distance.value,
+      duration_min: duration.value,
+      notes: values.notes.trim() || null,
+    },
+  };
 }
 
 /**
