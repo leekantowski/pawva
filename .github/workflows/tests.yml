@@ -1,0 +1,48 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-and-build:
+    name: Unit tests + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  rls:
+    name: Data isolation (real Supabase RLS)
+    runs-on: ubuntu-latest
+    # Only one run at a time, since every run uses the same two test accounts.
+    concurrency:
+      group: rls-test
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run data isolation test against Supabase
+        run: npm run test:rls
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          RLS_TEST_A_EMAIL: ${{ secrets.RLS_TEST_A_EMAIL }}
+          RLS_TEST_A_PASSWORD: ${{ secrets.RLS_TEST_A_PASSWORD }}
+          RLS_TEST_B_EMAIL: ${{ secrets.RLS_TEST_B_EMAIL }}
+          RLS_TEST_B_PASSWORD: ${{ secrets.RLS_TEST_B_PASSWORD }}

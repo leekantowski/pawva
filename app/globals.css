@@ -102,3 +102,42 @@ a { color: var(--forest); }
 .dog-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
 .dog-card { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 16px 20px; }
 .dog-stats { display: flex; flex-direction: column; align-items: flex-end; font-weight: 600; }
+
+/* Walks */
+.page-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.page-head h1 { margin: 0; }
+
+.stack-form select, .stack-form textarea {
+  font: inherit;
+  padding: 12px;
+  border: 1px solid #d8cdb8;
+  border-radius: 10px;
+  background: #fff;
+}
+.stack-form select:focus, .stack-form textarea:focus { outline: 2px solid var(--forest); outline-offset: 1px; }
+.stack-form h1 { margin: 0; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.walk-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.walk-card { display: block; color: inherit; text-decoration: none; padding: 16px 20px; }
+.walk-card:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12); }
+.walk-card-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.walk-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.walk-stats > div { display: flex; flex-direction: column; }
+.stat { font-size: 1.25rem; font-weight: 800; color: var(--forest-dark); }
+.stat-label { font-size: 0.8rem; color: var(--muted); }
+
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+.detail-grid dt { font-size: 0.85rem; color: var(--muted); }
+.detail-grid dd { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--forest-dark); }
+.small-heading { font-size: 1rem; margin-bottom: 4px; }
+.notes { white-space: pre-wrap; margin-top: 0; }
+
+.btn-danger { background: var(--error); color: #fff; }
+.btn-danger-outline { background: transparent; color: var(--error); border: 2px solid var(--error); }
+.confirm-box { width: 100%; background: #fdecea; border-radius: 10px; padding: 12px 16px; }
+.confirm-box p { margin-top: 0; }
+
+@media (max-width: 420px) {
+  .walk-stats { grid-template-columns: repeat(2, 1fr); }
+}
